@@ -1,5 +1,6 @@
 package com.wipro.usecase.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -11,20 +12,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @Entity
-public class PersonalDetails {
+public class PersonalDetails implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2179115157755443984L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int customerId;
 	private String name;
 	private String address;
-	private Date dob;
+	private String dob;
 	private String city;
 	private String state;
-	private String country;
+	//private String country;
 	private int accountId;
 	private String userName;
 	private String password;
+	private String emailId;
 	private String priviledge;
 
 	@Transient
@@ -34,20 +40,22 @@ public class PersonalDetails {
 		super();
 	}
 
-	public PersonalDetails(String name, String address, Date dob, String city, String state, String country,
-			int accountId, String userName, String password, String priviledge) {
+	public PersonalDetails(String name, String address, String dob, String city, String state, int accountId,
+			String userName, String password, String emailId, String priviledge) {
 		super();
 		this.name = name;
 		this.address = address;
 		this.dob = dob;
 		this.city = city;
 		this.state = state;
-		this.country = country;
 		this.accountId = accountId;
 		this.userName = userName;
 		this.password = password;
+		this.emailId = emailId;
 		this.priviledge = priviledge;
 	}
+
+
 
 	public String getAccountDetailsUri() {
 		return accountDetailsUri;
@@ -73,11 +81,12 @@ public class PersonalDetails {
 		this.address = address;
 	}
 
-	public Date getDob() {
+
+	public String getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
 
@@ -95,14 +104,6 @@ public class PersonalDetails {
 
 	public void setState(String state) {
 		this.state = state;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
 	}
 
 	public int getCustomerId() {
@@ -143,6 +144,14 @@ public class PersonalDetails {
 
 	public void setPriviledge(String priviledge) {
 		this.priviledge = priviledge;
+	}
+
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 
 }

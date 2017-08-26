@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import com.wipro.usecase.models.AccountDetails;
 import com.wipro.usecase.models.DepositDetails;
 import com.wipro.usecase.models.ErrorMessage;
+import com.wipro.usecase.models.FundTranferDetails;
 import com.wipro.usecase.models.PersonalDetails;
 import com.wipro.usecase.util.HibernateUtility;
 
@@ -64,6 +65,7 @@ public class UserAccountDao {
 			depositDetails.setPriviledge(personalDetails.getPriviledge());
 			accountDetails.setTotalAmount(accountDetails.getTotalAmount() + depositDetails.getAmountDeposited());
 			depositDetails.setCustomerId(personalDetails.getCustomerId());
+			depositDetails.setTransactionDate(new Date());
 		} else {
 			ErrorMessage errorMessage = new ErrorMessage(404,
 					"Invalid account number. Please enter valid account number.");
@@ -76,18 +78,67 @@ public class UserAccountDao {
 		session.close();
 	}
 
-	// Methods for adding Test Data
-	public void addTestData() {
-		PersonalDetails userDetails = new PersonalDetails("Bhawesh Kurmi", "D-102, montvert Tropez, Kaspatewasti",
-				new Date(), "Pune", "Maharashtra", "India", 1, "bkurmi", "password", "User");
-		AccountDetails accountDetails = new AccountDetails(12356, "ICICI Wakad", "ICICI00005", 411057, 45454);
-
+	public void fundTransfer(FundTranferDetails fundTransferDetails) {
 		Session session = HibernateUtility.getSessionFactory().openSession();
 		session.beginTransaction();
-		session.save(userDetails);
-		session.save(accountDetails);
+		session.save(fundTransferDetails);
+		
+		// update the total amount in AccountDetails table
+		AccountDetails accountDetails = (AccountDetails) session.get(AccountDetails.class,
+				fundTransferDetails.getFromAccountId());
+		if(accountDetails.getTotalAmount()>= Integer.parseInt(fundTransferDetails.getAmountTransfered())){
+			accountDetails.setTotalAmount(accountDetails.getTotalAmount() - Integer.parseInt(fundTransferDetails.getAmountTransfered()));
+		}
+		else{
+			ErrorMessage errorMessage = new ErrorMessage(404,
+					"Insufficient Balance in your Account");
+			Response response = Response.status(Status.CONFLICT).entity(errorMessage)
+					.header("Access-Control-Allow-Origin", "*").build();
+			throw new WebApplicationException(response);
+		}
 		session.getTransaction().commit();
 		session.close();
 	}
+	// Methods for adding Test Data
+	public int addCustomerData(PersonalDetails personalDetails) {
+		AccountDetails accountDetails = new AccountDetails(0);
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		session.beginTransaction();
+		int accountId = (int)session.save(accountDetails);
+		personalDetails.setAccountId(accountId);
+		personalDetails.setPriviledge("User");
+		session.save(personalDetails);
+		session.getTransaction().commit();
+		session.close();
+		return accountId;
+	}
 
+	public static void main(String[] args) {
+		UserAccountDao a = new UserAccountDao();
+		a.addTestData1111();
+		
+	}
+
+	public List<FundTranferDetails> getTransactionList(int fromAccountId) {
+		Session session = HibernateUtility.getSessionFactory().openSession();
+		 @SuppressWarnings("unchecked")
+		List<FundTranferDetails> fundTranferDetailsList = session.createQuery("FROM FundTranferDetails where fromAccountId = :fromAccountId")
+				 	.setParameter("fromAccountId", fromAccountId)
+				 	.setFirstResult(0)
+				 	.setMaxResults(10).list();
+		 System.out.println("Size of Deposit details"+fundTranferDetailsList.size());
+		return fundTranferDetailsList;
+	}
+
+	
+	
+	// Methods for adding Test Data
+		public void addTestData1111() {
+			FundTranferDetails userDetails = new FundTranferDetails(1234,3456,"898786","Tranferred",new Date());
+			Session session = HibernateUtility.getSessionFactory().openSession();
+			session.beginTransaction();
+			session.save(userDetails);
+			session.getTransaction().commit();
+			session.close();
+		}
 }

@@ -1,5 +1,7 @@
 package com.wipro.usecase.models;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +22,7 @@ public class DepositDetails {
 	private int amountDeposited;
 	private String paymentMode;
 	private String chequeNumber;
+	private Date transactionDate;
 	@Transient
 	private String accountDetailsUri;
 	@Transient
@@ -99,5 +102,13 @@ public class DepositDetails {
 
 	public void setChequeNumber(String chequeNumber) {
 		this.chequeNumber = chequeNumber;
+	}
+
+	public Date getTransactionDate() {
+		return transactionDate;
+	}
+
+	public void setTransactionDate(Date transactionDate) {
+		this.transactionDate = transactionDate;
 	}
 }

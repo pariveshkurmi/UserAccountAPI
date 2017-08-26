@@ -1,5 +1,7 @@
 package com.wipro.usecase.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,16 +9,21 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 @XmlRootElement
 @Entity
-public class AccountDetails {
+public class AccountDetails implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -299822272265361490L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int accountId;
-	private String branch;
+	/*private String branch;
 	private String Ifsc;
-	private int zipCode;
+	private int zipCode;*/
 	private int totalAmount;
 
 	@Transient
@@ -32,12 +39,8 @@ public class AccountDetails {
 		super();
 	}
 
-	public AccountDetails(int accountId, String branch, String ifsc, int zipCode, int totalAmount) {
+	public AccountDetails(int totalAmount) {
 		super();
-		this.accountId = accountId;
-		this.branch = branch;
-		Ifsc = ifsc;
-		this.zipCode = zipCode;
 		this.totalAmount = totalAmount;
 	}
 
@@ -55,30 +58,6 @@ public class AccountDetails {
 
 	public void setPriviledge(String priviledge) {
 		this.priviledge = priviledge;
-	}
-
-	public String getBranch() {
-		return branch;
-	}
-
-	public void setBranch(String branch) {
-		this.branch = branch;
-	}
-
-	public String getIfsc() {
-		return Ifsc;
-	}
-
-	public void setIfsc(String ifsc) {
-		Ifsc = ifsc;
-	}
-
-	public int getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(int zipCode) {
-		this.zipCode = zipCode;
 	}
 
 	public int getTotalAmount() {
